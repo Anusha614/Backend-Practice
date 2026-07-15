@@ -1,0 +1,6 @@
+{
+    "singleQuote"= false,
+    "backspacing" =true,
+    "tabwidthComma"= es5,
+    "semi" = true
+}
