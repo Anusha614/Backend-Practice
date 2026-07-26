@@ -1,17 +1,17 @@
 import express from "express" 
 
-
-const asyncHandler = (fn) => async(req, res, next) => {
+const asyncHandler = (fn) => async (req, res, next) => {
     try {
-        await fn ( req, res, next )
+        await fn(req, res, next)
     } catch (error) {
-        console.log(
-            res.status(error.code || 500).json({
-                success: false,
-                message: error.message
-            })
-        )
-    }
+    //console.error(error);   
+
+    return res.status(500).json({
+        success: false,
+        message: error.message,
+        //stack: error.stack
+    });
+}
 }
 
-export {asyncHandler}
+export { asyncHandler }
