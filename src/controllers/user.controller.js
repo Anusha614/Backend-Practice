@@ -243,3 +243,5 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     )
 
 })
+
+export {refreshAccessToken}
