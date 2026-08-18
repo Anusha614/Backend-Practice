@@ -11,7 +11,7 @@ const playlistSchema = new Schema(
             type: String,
             required: true
         },
-        likedBy: [{
+        video: [{
             type: Schema.Types.ObjectId,
             ref: "Video"
             }
