@@ -4,7 +4,7 @@ import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
-
+// GET PLAYLISTS BY USER ID REMAINING
 const createPlaylist = asyncHandler(async (req, res) => {
     const {name, description} = req.body
 
@@ -42,6 +42,49 @@ const createPlaylist = asyncHandler(async (req, res) => {
 const getUserPlaylists = asyncHandler(async (req, res) => {
     const {userId} = req.params
     //TODO: get user playlists
+    if (!isValidObjectId(userId)) {
+        throw new ApiError(400, "Invalid user ID")
+    }
+
+    const playlists = await Playlist.aggregate([
+        {
+            $match: {
+                owner: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                LocalField: "video",
+                foreignField: "_id",
+                as: "videos"
+            }
+        }, 
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    {
+                        $project: {
+                            username: 1,
+                            fullName: 1,
+                            avatar: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $unwind: "$owner"
+        }
+    ])
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, playlists, "User playlists fetched successfully!"))
 })
 
 const getPlaylistById = asyncHandler(async (req, res) => {
