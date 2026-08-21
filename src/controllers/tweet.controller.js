@@ -6,7 +6,7 @@ import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
 
-// getUserTweets REMAINING
+
 const createTweet = asyncHandler(async (req, res) => {
     //TODO: create tweet
     //get content and tweet ID
@@ -33,6 +33,48 @@ const createTweet = asyncHandler(async (req, res) => {
 
 const getUserTweets = asyncHandler(async (req, res) => {
     // TODO: get user tweets
+    const {userId} = req.params
+
+    if (!isValidObjectId(userId)) {
+        throw new ApiError(400, "user ID is invalid")
+    }
+
+    const userTweets = await Tweet.aggregate ([
+        {
+            $match: {
+                owner: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    {
+                        $project: {
+                            username: 1,
+                            fullName: 1,
+                            avatar: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $unwind: "$owner"
+        },
+        {
+            $sort: {
+                createdAt: -1
+            }
+        }
+    ])
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, userTweets, "User tweets fetched successfully!"))
 })
 
 const updateTweet = asyncHandler(async (req, res) => {
