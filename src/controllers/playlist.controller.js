@@ -8,7 +8,7 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 const createPlaylist = asyncHandler(async (req, res) => {
     const {name, description} = req.body
 
-    //TODO: create playlist
+   
     
     //check if name is provided
     //check if description is provided
@@ -33,7 +33,7 @@ const createPlaylist = asyncHandler(async (req, res) => {
     })
 
     return res
-    .status(200)
+    .status(201)
     .json(new ApiResponse(201, newPlaylist, "Playlist created successfully!"))
 
     
@@ -41,7 +41,7 @@ const createPlaylist = asyncHandler(async (req, res) => {
 
 const getUserPlaylists = asyncHandler(async (req, res) => {
     const {userId} = req.params
-    //TODO: get user playlists
+   
     if (!isValidObjectId(userId)) {
         throw new ApiError(400, "Invalid user ID")
     }
@@ -89,7 +89,7 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
 
 const getPlaylistById = asyncHandler(async (req, res) => {
     const {playlistId} = req.params
-    //TODO: get playlist by id
+   
 
     if (isValidObjectId(playlistId)) {
         throw new ApiError(400, "playlist ID invalid")
@@ -124,7 +124,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
         {
             $lookup: {
                 from: "videos",
-                localField: "videos",
+                localField: "video",
                 foreignField: "_id",
                 as: "videos"
             }
@@ -195,7 +195,7 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
 
 const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
     const {playlistId, videoId} = req.params
-    // TODO: remove video from playlist
+    
     //get playlist by ID
     //check if playlist exists
     //check if user authorized
@@ -249,7 +249,7 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
 
 const deletePlaylist = asyncHandler(async (req, res) => {
     const {playlistId} = req.params
-    // TODO: delete playlist
+  
     //look for playlist via ID
     //check if user is auth
     //check if playlist exist
@@ -284,7 +284,7 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 const updatePlaylist = asyncHandler(async (req, res) => {
     const {playlistId} = req.params
     const {name, description} = req.body
-    //TODO: update playlist
+    
     //look for playlist by ID
     //check if user is auth
     //check if playlist exists

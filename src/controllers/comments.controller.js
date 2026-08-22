@@ -1,11 +1,11 @@
 import mongoose from "mongoose"
-import {Comment} from "../models/comment.model.js"
+import {Comment} from "../models/comment.models.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
 const getVideoComments = asyncHandler(async (req, res) => {
-    //TODO: get all comments for a video
+    
     const {videoId} = req.params
     const {page = 1, limit = 10} = req.query
 
@@ -16,7 +16,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
     const comments = await Comment.aggregate([
         {
             $match: {
-                video: mongoose.Types.objectId(videoId)
+                video: mongoose.Types.ObjectId(videoId)
             }
         },
         {
@@ -57,7 +57,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
         limit: parseInt(limit, 10)
     };
 
-    const comments = await Comment.aggregatePaginate(aggregateQuery, options);
+    comments = await Comment.aggregatePaginate(aggregateQuery, options);
 
     return res
         .status(200)
@@ -67,7 +67,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
 })
 
 const addComment = asyncHandler(async (req, res) => {
-    // TODO: add a comment to a video
+    
     const {videoId} = req.params
     const {content} = req.body
 
@@ -96,7 +96,7 @@ const addComment = asyncHandler(async (req, res) => {
 
 
 const updateComment = asyncHandler(async (req, res) => {
-    // TODO: update a comment
+    
     const {commentId} = req.params
     const {content} = req.body
 
@@ -137,14 +137,14 @@ const updateComment = asyncHandler(async (req, res) => {
 })
 
 const deleteComment = asyncHandler(async (req, res) => {
-    // TODO: delete a comment
+    
     const {commentId} =req.params
 
     if (!mongoose.Types.ObjectId.isValid(commentId)) {
         throw new ApiError(400, "Invalid comment ID")
     }
 
-    const comment = await comment.findById(commentId)
+    const comment = await Comment.findById(commentId)
 
     if (!comment) {
         throw new ApiError(404, "comment not found")
@@ -154,7 +154,7 @@ const deleteComment = asyncHandler(async (req, res) => {
         throw new ApiError(403, "you are unauthorized to delete this comment")
     }
 
-    await comment.findByIdAndDelete(commentId)
+    await Comment.findByIdAndDelete(commentId)
 
     return res
     .status(200)

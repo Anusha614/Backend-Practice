@@ -8,7 +8,7 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 
 
 const createTweet = asyncHandler(async (req, res) => {
-    //TODO: create tweet
+    
     //get content and tweet ID
     //check if content is provided
     //create tweet
@@ -78,7 +78,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
 })
 
 const updateTweet = asyncHandler(async (req, res) => {
-    //TODO: update tweet
+    
     //get tweet ID
     //check if Id is valid
     //get tweet from tweet ID
@@ -120,7 +120,7 @@ const updateTweet = asyncHandler(async (req, res) => {
 })
 
 const deleteTweet = asyncHandler(async (req, res) => {
-    //TODO: delete tweet
+    
     //get tweet ID
     //check if Id vald
     //find tweet

@@ -6,7 +6,7 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
     const {videoId} = req.params
-    //TODO: toggle like on video
+   
     //check if videoID is valid
     //check if video is liked
     // if liked unlike
@@ -45,13 +45,13 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 
      //send response 
      return res
-     .status(200)
-     .json(new ApiResponse(200, "Liked video successfully!"))
+     .status(201)
+     .json(new ApiResponse(201, "Liked video successfully!"))
 })
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
     const {commentId} = req.params
-    //TODO: toggle like on comment
+    
     //check if commentID is valid
     //check if comment is liked
     // if liked unlike
@@ -90,14 +90,14 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
 
      //send response 
      return res
-     .status(200)
-     .json(new ApiResponse(200, "Liked comment successfully!"))
+     .status(201)
+     .json(new ApiResponse(201, "Liked comment successfully!"))
 
 })
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
     const {tweetId} = req.params
-    //TODO: toggle like on tweet
+    
     //check if tweetId is valid
     //check if tweet is liked
     // if liked unlike
@@ -136,14 +136,14 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 
      //send response 
      return res
-     .status(200)
-     .json(new ApiResponse(200, "Liked tweet successfully!"))
+     .status(201)
+     .json(new ApiResponse(201, "Liked tweet successfully!"))
     
 }
 )
 
 const getLikedVideos = asyncHandler(async (req, res) => {
-    //TODO: get all liked videos
+   
     const userId = req.user?._id
 
     const likedVideos = await Like.aggregate ([
