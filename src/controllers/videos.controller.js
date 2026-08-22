@@ -7,10 +7,77 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 
 
-// getAllVideos REMAINING
+
 const getAllVideos = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
     //TODO: get all videos based on query, sort, pagination
+
+    const pipeline = []
+
+    if (userId) {
+        if (!isValidObjectId(userId)) {
+            throw new ApiError(400, "Invalid user ID")
+        }
+
+        pipeline.push({
+            $match: {
+                owner: new mongoose.Types.ObjectId(userId)
+            }
+        })
+    }
+
+    if (query) {
+        pipeline.push({
+            $match: {
+                $or: [
+                    {title: {$regex: query, $options: "i"}},
+                    {description: {$regex: query, $options: "i"}}
+                ]
+            }
+        })
+    }
+
+    pipeline.push({
+        $match: {
+            isPublished: true
+        }
+    })
+
+    pipeline.push({
+        $lookup: {
+            from: "users",
+            localField: "owner",
+            foreignField: "_id",
+            as: "owner",
+            pipeline: [
+                {
+                    $project: {
+                        username: 1,
+                        fullName: 1,
+                        avatar: 1
+                    }
+                }
+            ]
+        }
+    })
+
+    pipeline.push({
+        $unwind: "$owner"
+    })
+
+    const sortStage = {}
+    sortStage[sortBy] = sortType === "asc" ? 1: -1
+    pipeline.push({$sort: sortStage})
+
+    const skip = (parseInt(page) - 1)*parseInt(limit)
+    pipeline.push({$skip: skip})
+    pipeline.push({$limit: parseInt(limit)})
+
+    const videos = await Video.aggregate(pipeline)
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, videos, "fetched videos successfully!"))
 })
 
 const publishAVideo = asyncHandler(async (req, res) => {
